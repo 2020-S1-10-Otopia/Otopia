@@ -45,8 +45,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     int angle2 = rand.nextInt(360);
     private RoundButton leftButton = new RoundButton(util.screenWidth() / 1280 * 120, util.screenHeight() / 720 * 600, buttonSize, new Arrow(180, buttonSize / 4 * 3, util.screenWidth() / 1280 * 120, util.screenHeight() / 720 * 600));
     private RoundButton rightButton = new RoundButton(util.screenWidth() / 1280 * 300, util.screenHeight() / 720 * 600, buttonSize, new Arrow(0, buttonSize / 4 * 3, util.screenWidth() / 1280 * 300, util.screenHeight() / 720 * 600));
-    private RoundButton jumpButton = new RoundButton(util.screenWidth() / 1280 * 1160, util.screenHeight() / 720 * 500, buttonSize, new Arrow(270, buttonSize / 4 * 3, util.screenWidth() / 1280 * 1160, util.screenHeight() / 720 * 500));
-    private RoundButton crouchButton = new RoundButton(util.screenWidth() / 1280 * 1010, util.screenHeight() / 720 * 600, buttonSize, new Arrow(90, buttonSize / 4 * 3, util.screenWidth() / 1280 * 1010, util.screenHeight() / 720 * 600));
+    private RoundButton jumpButton = new RoundButton(util.screenWidth() / 1280 * 200, util.screenHeight() / 720 * 400, buttonSize, new Arrow(270, buttonSize / 4 * 3, util.screenWidth() / 1280 * 200, util.screenHeight() /  720 * 400));
+    private RoundButton crouchButton = new RoundButton(util.screenWidth() / 1280 * 200, util.screenHeight() / 720 * 800, buttonSize, new Arrow(90, buttonSize / 4 * 3, util.screenWidth() / 1280 * 200, util.screenHeight() /  720 * 800));
     private RoundButton meleeButton = new RoundButton(util.screenWidth() / 1280 * 1000, util.screenHeight() / 720 * 420, buttonSize);
     private RoundButton fireButton = new RoundButton(util.screenWidth() / 1280 * 1170, util.screenHeight() / 720 * 330, buttonSize);
     Player player = new Player();
