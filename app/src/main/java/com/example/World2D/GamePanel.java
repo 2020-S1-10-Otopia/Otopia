@@ -47,11 +47,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     int angle2 = rand.nextInt(360);
     private RoundButton leftButton = new RoundButton(util.screenWidth() / 1280 * 120, util.screenHeight() / 720 * 600, buttonSize, new Arrow(180, buttonSize / 4 * 3, util.screenWidth() / 1280 * 120, util.screenHeight() / 720 * 600));
     private RoundButton rightButton = new RoundButton(util.screenWidth() / 1280 * 300, util.screenHeight() / 720 * 600, buttonSize, new Arrow(0, buttonSize / 4 * 3, util.screenWidth() / 1280 * 300, util.screenHeight() / 720 * 600));
-    private RoundButton jumpButton = new RoundButton(util.screenWidth() / 1280 * 200, util.screenHeight() / 720 * 400, buttonSize, new Arrow(270, buttonSize / 4 * 3, util.screenWidth() / 1280 * 200, util.screenHeight() /  720 * 400));
-    private RoundButton crouchButton = new RoundButton(util.screenWidth() / 1280 * 200, util.screenHeight() / 720 * 800, buttonSize, new Arrow(90, buttonSize / 4 * 3, util.screenWidth() / 1280 * 200, util.screenHeight() /  720 * 800));
+    private RoundButton jumpButton = new RoundButton(util.screenWidth() / 1280 * 1180, util.screenHeight() / 720 * 510, buttonSize, new Arrow(270, buttonSize / 4 * 3, util.screenWidth() / 1280 * 1180, util.screenHeight() /  720 * 510));
+    private RoundButton crouchButton = new RoundButton(util.screenWidth() / 1280 * 1040, util.screenHeight() / 720 * 620, buttonSize, new Arrow(90, buttonSize / 4 * 3, util.screenWidth() / 1280 * 1040, util.screenHeight() /  720 * 620));
     private RoundButton meleeButton = new RoundButton(util.screenWidth() / 1280 * 1000, util.screenHeight() / 720 * 420, buttonSize);
-    private RoundButton fireButton = new RoundButton(util.screenWidth() / 1280 * 1170, util.screenHeight() / 720 * 330, buttonSize);
+    private RoundButton fireButton = new RoundButton(round(util.screenWidth() / 1280f) * 1170, util.screenHeight() / 720 * 330, buttonSize);
     private RoundButton respawnButton = new RoundButton(40, 40, buttonSize / 2);
+    private RoundButton healButton = new RoundButton(40, 140, buttonSize / 2);
     Player player = new Player();
     Environment e = new Environment(/*player.getBox()*/);
     public GamePanel(Context context){
@@ -150,6 +151,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 if(respawnButton.getActive()){
                     player.setHealth(player.healthBar.getMaxHealth());
                     e.setDisplacement(-e.getXDisplacement(), -e.getYDisplacement());
+                    player.setHeals(3);
+                }
+                healButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
+                if(healButton.getActive() && player.getHealth() < player.healthBar.getMaxHealth() && player.getHeals() > 0){
+                    player.setHealth(player.getHealth() + (player.healthBar.getMaxHealth() / 2));
+                    player.setHeals(player.getHeals() - 1);
                 }
             }
             else if(action == MotionEvent.ACTION_POINTER_DOWN){
@@ -230,6 +237,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 }
             }
             respawnButton.handleTouchDown(event.getX(), event.getY());
+            healButton.handleTouchDown(event.getX(), event.getY());
         }
         else if(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP){
             if(action == MotionEvent.ACTION_UP){
@@ -254,6 +262,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                     fireButton.setInactive();
                 }
                 respawnButton.setInactive();
+                healButton.setInactive();
             }
             if(action == MotionEvent.ACTION_POINTER_UP){
                 this.id = event.getPointerId(getIndex(event));
@@ -303,6 +312,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         meleeButton.setColour(0, 0, 0);
         fireButton.setColour(0, 0, 0);
         respawnButton.setColour(0, 0, 0);
+        healButton.setColour(0, 0, 0);
         //*****************************************************************************************
         if(xVelocity != 0 && player.getBox().getBottomCollision() && !player.getIsCrouched() && player.getHealth() > 0){
                 player.walk();
@@ -567,16 +577,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             mostDrawn = e.getCanDrawList().size();
         }
         player.getBox().setCanDraw(true);
-        if(player.getHealth() < player.healthBar.getMaxHealth() && player.getHealth() > 0){
-            regenCount++;
-            if(regenCount > 90){
-                regenCount = 0;
-                player.setHealth(player.getHealth() + 1);
-            }
-        }
-        else{
-            regenCount = 0;
-        }
+//        if(player.getHealth() < player.healthBar.getMaxHealth() && player.getHealth() > 0){
+//            regenCount++;
+//            if(regenCount > 90){
+//                regenCount = 0;
+//                player.setHealth(player.getHealth() + 1);
+//            }
+//        }
+//        else{
+//            regenCount = 0;
+//        }
 
         player.draw(canvas);
         leftButton.draw(canvas);
@@ -586,6 +596,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         meleeButton.draw(canvas);
         fireButton.draw(canvas);
         respawnButton.draw(canvas);
+        healButton.draw(canvas);
+        canvas.drawText("" + player.getHeals(), healButton.getX() - paint.getTextSize() / 4, healButton.getY() + paint.getTextSize() / 3, paint);
         if(player.healthBar.getCurrentHealth() <= player.healthBar.getMaxHealth() / 2){
             paint.setColor(Color.argb(round((float)(255) - ((float)(player.healthBar.getCurrentHealth()) / (float)(player.healthBar.getMaxHealth() / 2) * (float) (255))),150, 0, 0));
             paint.setStyle(Paint.Style.STROKE);

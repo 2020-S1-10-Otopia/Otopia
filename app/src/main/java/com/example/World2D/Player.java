@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 class Player {
     private Utilities util = new Utilities();
+    private int heals = 3;
     private BoundingBox box = new BoundingBox(util.screenWidth() / 2, round(util.screenHeight() / 1.6), util.screenWidth() / 25, util.screenHeight() / 6);
     private int health = 100;
     StatusBar healthBar = new StatusBar(health, 255, 10, 350, 20, StatusBar.DISPLAY_FRACTION, "green");
@@ -125,6 +126,12 @@ class Player {
         deathList.add(new float[]{10, 90, 90, 90, 270, 270, 270, 270, 270, 270, 270, 270});
 //        deathList.add(new float[]{});
 
+    }
+    void setHeals(int heals){
+        this.heals = heals;
+    }
+    int getHeals(){
+        return heals;
     }
     private void mirrorJoints(boolean b) {
         for(int i = 0; i<parts.size(); i++){

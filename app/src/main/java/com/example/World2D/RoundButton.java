@@ -91,4 +91,10 @@ public class RoundButton {
             arrow.draw(canvas);
         }
     }
+    int getX(){
+        return x;
+    }
+    int getY(){
+        return y;
+    }
 }
