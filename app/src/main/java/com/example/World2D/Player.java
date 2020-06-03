@@ -34,19 +34,23 @@ class Player {
     private ArrayList<float[]> crouchWalkList = new ArrayList<>();
     private ArrayList<float[]> jumpList = new ArrayList<>();
     private ArrayList<float[]> wallRunList = new ArrayList<>();
+    private ArrayList<float[]> deathList = new ArrayList<>();
+
 //    private ArrayList<float[]> flipList = new ArrayList<>();
     private float[]idleKeyFrame = {4, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200};
     private float[]onWallKeyFrame = {2, 0, 10, 20,  35, 10,     210, 190,   30,  170,   150, 170};
 //    private float[]crouchKeyFrame = {5, 30, 60, 90,  180, 60,     170, 80,   30,  170,   40, 190};
     private ArrayList<float[]> fallList = new ArrayList<>();
     private boolean isCrouched = false;
-//    private boolean isFacingLeft = false;
+    private boolean isFacingLeft = false;
     private int boneWidth = box.getWidth() / 15;
     private int walkKeyFrame = 0;
     private int jumpKeyFrame = 0;
     private int fallKeyFrame = 0;
     private int wallRunKeyFrame = 0;
     private int crouchWalkKeyFrame = 0;
+    private int deathKeyFrame = 0;
+    private int deathCount = 0;
 //    private int flipKeyFrame = 0;
     private int crouchKeyFrame = 0;
     private int jumpCount = 0;
@@ -115,6 +119,12 @@ class Player {
         crouchWalkList.add(new float[]{5, 30, 60, 90,   160, 80,   280, 200,   70, 180,    90, 220});
         crouchWalkList.add(new float[]{5, 30, 60, 90,   220, 140,   220, 140,   80, 200,    80, 200});
 
+        deathList.add(new float[]{1, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200});
+        deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
+        deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
+        deathList.add(new float[]{10, 90, 90, 90, 270, 270, 270, 270, 270, 270, 270, 270});
+//        deathList.add(new float[]{});
+
     }
     private void mirrorJoints(boolean b) {
         for(int i = 0; i<parts.size(); i++){
@@ -131,18 +141,12 @@ class Player {
         return health;
     }
     void setFacingLeft(boolean b){
-//        this.isFacingLeft = b;
+        this.isFacingLeft = b;
         mirrorJoints(b);
     }
 //    boolean getIsFacingLeft(){
 //        return isFacingLeft;
 //    }
-    int getWalkKeyFrame(){
-        return walkKeyFrame;
-    }
-    int getWalkCount(){
-        return walkCount;
-    }
     private void resetWalkAnimation(){
         walkKeyFrame = 0;
         walkCount = 0;
@@ -220,9 +224,38 @@ class Player {
         resetCrouchWalkAnimation();
         idleCount = 0;
     }
-//    void death(){
-//
-//    }
+    void death() {
+        for (int i = 0; i < parts.size(); i++) {
+            if (deathList.get(deathKeyFrame)[i + 1] >= parts.get(i).getCurrentRotation()) {
+                if((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) >= 180){
+//                    --
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() - ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
+                }
+                else if((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) < 180){
+//                    ++
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() + ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
+                }
+            }
+            else if(parts.get(i).getCurrentRotation() > deathList.get(deathKeyFrame)[i + 1]){
+                if((parts.get(i).getCurrentRotation() - deathList.get(deathKeyFrame)[i + 1]) >= 180){
+//                  ++
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() +- ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
+                }
+                else if((parts.get(i).getCurrentRotation() - deathList.get(deathKeyFrame)[i + 1]) < 180){
+//                  --
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() - ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
+                }
+            }
+            connectJoints(parts);
+        }
+        if(deathCount<deathList.get(deathKeyFrame)[0] && deathKeyFrame<deathList.size() - 1){
+            deathCount++;
+            if(deathCount >= deathList.get(deathKeyFrame)[0]){
+                deathKeyFrame++;
+                deathCount = 0;
+            }
+        }
+    }
     void jump(){
         for(int i = 0; i < parts.size(); i++){
             if(parts.get(i).getCurrentRotation() >= 180){
@@ -424,7 +457,7 @@ class Player {
             parts.get(i).setWidth(boneWidth);
             parts.get(i).drawAll(canvas);
         }
-//        healthBar.draw(canvas);
+        healthBar.draw(canvas);
     }
     void crouch(){
         for (int i = 0; i < parts.size(); i++){

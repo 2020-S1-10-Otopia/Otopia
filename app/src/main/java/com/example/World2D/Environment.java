@@ -40,6 +40,12 @@ class Environment {
             mainList.get(i).setDisplacement(mainList.get(i).getXDisplacement() + xVal, mainList.get(i).getYDisplacement() + yVal);
         }
     }
+    int getXDisplacement(){
+        return mainList.get(0).getXDisplacement();
+    }
+    int getYDisplacement(){
+        return mainList.get(0).getYDisplacement();
+    }
     void setColour(int index, int r, int g, int b){
         mainList.get(index).setColour(r, g, b);
     }

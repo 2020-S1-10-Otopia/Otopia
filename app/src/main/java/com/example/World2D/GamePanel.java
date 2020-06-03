@@ -28,6 +28,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     int leftId;
     int rightId;
     int crouchId;
+    int meleeId;
+    int fireId;
     int mostDrawn = 0;
     float xVelocity = 0;
     float yVelocity = 0;
@@ -49,6 +51,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     private RoundButton crouchButton = new RoundButton(util.screenWidth() / 1280 * 1010, util.screenHeight() / 720 * 600, buttonSize, new Arrow(90, buttonSize / 4 * 3, util.screenWidth() / 1280 * 1010, util.screenHeight() / 720 * 600));
     private RoundButton meleeButton = new RoundButton(util.screenWidth() / 1280 * 1000, util.screenHeight() / 720 * 420, buttonSize);
     private RoundButton fireButton = new RoundButton(util.screenWidth() / 1280 * 1170, util.screenHeight() / 720 * 330, buttonSize);
+    private RoundButton respawnButton = new RoundButton(40, 40, buttonSize / 2);
     Player player = new Player();
     Environment e = new Environment(/*player.getBox()*/);
     public GamePanel(Context context){
@@ -106,13 +109,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                         rightId = 0;
                     }
                 }
-                if(!jumpButton.getActive()){
+                if(!jumpButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
                     crouchButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
                     if(crouchButton.getActive()){
                         crouchId = 0;
                     }
                 }
-                if(!crouchButton.getActive()){
+                if(!crouchButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
                     jumpButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
                     if(jumpButton.getActive() && !player.getIsCrouched()){
                         jumpId = 0;
@@ -131,6 +134,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                         }
                     }
                 }
+                if(!jumpButton.getActive() && !crouchButton.getActive() && !fireButton.getActive()){
+                    meleeButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
+                    if(meleeButton.getActive()){
+                        meleeId = 0;
+                    }
+                }
+                if(!jumpButton.getActive() && !crouchButton.getActive() && !meleeButton.getActive()){
+                    fireButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
+                    if(fireButton.getActive()){
+                        fireId = 0;
+                    }
+                }
+                respawnButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
+                if(respawnButton.getActive()){
+                    player.setHealth(player.healthBar.getMaxHealth());
+                    e.setDisplacement(-e.getXDisplacement(), -e.getYDisplacement());
+                }
             }
             else if(action == MotionEvent.ACTION_POINTER_DOWN){
                 this.id = event.getPointerId(getIndex(event));
@@ -147,7 +167,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                         rightId = event.getPointerId(event.getActionIndex());
                     }
                 }
-                if(!jumpButton.getActive()){
+                if(!jumpButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
                     jumpButton.handleTouchDown(event.getX(event.getActionIndex()), event.getY(event.getActionIndex()));
                     if (jumpButton.getActive()){
                         jumpId = event.getPointerId(event.getActionIndex());
@@ -166,10 +186,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                         }
                     }
                 }
-                if(!crouchButton.getActive()){
+                if(!crouchButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
                     crouchButton.handleTouchDown(event.getX(event.getActionIndex()), event.getY(event.getActionIndex()));
                     if (crouchButton.getActive()){
                         crouchId = event.getPointerId(event.getActionIndex());
+                    }
+                }
+                if(!jumpButton.getActive() && !crouchButton.getActive() && !fireButton.getActive()){
+                    meleeButton.handleTouchDown(event.getX(event.getActionIndex()), event.getY(event.getActionIndex()));
+                    if(meleeButton.getActive()){
+                        meleeId = event.getPointerId(event.getActionIndex());
+                    }
+                }
+                if(!jumpButton.getActive() && !crouchButton.getActive() && !meleeButton.getActive()){
+                    fireButton.handleTouchDown(event.getX(event.getActionIndex()), event.getY(event.getActionIndex()));
+                    if(fireButton.getActive()){
+                        fireId = event.getPointerId(event.getActionIndex());
                     }
                 }
             }
@@ -190,7 +222,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 if(crouchId == event.getPointerId(i)){
                     crouchButton.handleTouchDown(pointers.get(i).x, pointers.get(i).y);
                 }
+                if(meleeId == event.getPointerId(i)){
+                    meleeButton.handleTouchDown(pointers.get(i).x, pointers.get(i).y);
+                }
+                if(fireId == event.getPointerId(i)){
+                    fireButton.handleTouchDown(pointers.get(i).x, pointers.get(i).y);
+                }
             }
+            respawnButton.handleTouchDown(event.getX(), event.getY());
         }
         else if(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP){
             if(action == MotionEvent.ACTION_UP){
@@ -208,6 +247,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 if(crouchId == 0){
                     crouchButton.setInactive();
                 }
+                if(meleeId == 0){
+                    meleeButton.setInactive();
+                }
+                if(fireId == 0){
+                    fireButton.setInactive();
+                }
+                respawnButton.setInactive();
             }
             if(action == MotionEvent.ACTION_POINTER_UP){
                 this.id = event.getPointerId(getIndex(event));
@@ -224,6 +270,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 if(crouchId == event.getActionIndex()){
                     crouchButton.setInactive();
                 }
+                if(meleeId == event.getActionIndex()){
+                    meleeButton.setInactive();
+                }
+                if(fireId == event.getActionIndex()){
+                 fireButton.setInactive();
+                }
             }
         }
         pointerCount = pointers.size();
@@ -232,6 +284,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             rightButton.setInactive();
             jumpButton.setInactive();
             crouchButton.setInactive();
+            meleeButton.setInactive();
+            fireButton.setInactive();
         }
         return true;
     }
@@ -248,8 +302,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         crouchButton.setColour(0, 0, 0);
         meleeButton.setColour(0, 0, 0);
         fireButton.setColour(0, 0, 0);
+        respawnButton.setColour(0, 0, 0);
         //*****************************************************************************************
-        if(xVelocity != 0 && player.getBox().getBottomCollision() && !player.getIsCrouched()){
+        if(xVelocity != 0 && player.getBox().getBottomCollision() && !player.getIsCrouched() && player.getHealth() > 0){
                 player.walk();
                 animationId = 1;
             if(fallDamageCount > util.screenHeight()){
@@ -257,7 +312,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             }
             fallDamageCount = 0;
         }
-        else if(xVelocity == 0 && yVelocity == 0 && !player.getIsCrouched() && player.getBox().getBottomCollision()){
+        else if(xVelocity == 0 && yVelocity == 0 && !player.getIsCrouched() && player.getBox().getBottomCollision() && player.getHealth() > 0){
             player.setIdle();
             animationId = 2;
             if(fallDamageCount > util.screenHeight()){
@@ -265,7 +320,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             }
             fallDamageCount = 0;
         }
-        else if(yVelocity > 0 && !player.getBox().getBottomCollision() && player.getCurrentJumps() <= player.getMAX_NUMBER_OF_JUMPS() - 1 && player.getCurrentJumps() >= 0){
+        else if(yVelocity > 0 && !player.getBox().getBottomCollision() && player.getCurrentJumps() <= player.getMAX_NUMBER_OF_JUMPS() - 1 && player.getCurrentJumps() >= 0 && player.getHealth() > 0){
             player.jump();
             animationId = 3;
             fallDamageCount = 0;
@@ -273,22 +328,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
 //        else if(yVelocity > 0 && !player.getBox().getBottomCollision() && player.getCurrentJumps() < player.getMAX_NUMBER_OF_JUMPS() - 1){
 //            player.flip();
 //        }
-        else if(yVelocity <= 0 && !player.getBox().getBottomCollision() && !player.getBox().getRightCollision() && !player.getBox().getLeftCollision()){
+        else if(yVelocity <= 0 && !player.getBox().getBottomCollision() && !player.getBox().getRightCollision() && !player.getBox().getLeftCollision() && player.getHealth() > 0){
             player.fall();
             animationId = 4;
             fallDamageCount += Math.abs(yVelocity);
         }
-        else if((player.getBox().getLeftCollision() || player.getBox().getRightCollision()) && yVelocity <= 0 && !player.getBox().getBottomCollision()){
+        else if((player.getBox().getLeftCollision() || player.getBox().getRightCollision()) && yVelocity <= 0 && !player.getBox().getBottomCollision() && player.getHealth() > 0){
             player.onWall();
             animationId = 5;
             fallDamageCount = 0;
         }
-        else if((player.getBox().getLeftCollision() || player.getBox().getRightCollision()) && yVelocity > 0 && !player.getBox().getBottomCollision() && xVelocity == 0){
+        else if((player.getBox().getLeftCollision() || player.getBox().getRightCollision()) && yVelocity > 0 && !player.getBox().getBottomCollision() && xVelocity == 0 && player.getHealth() > 0){
             player.wallRun();
             animationId = 6;
             fallDamageCount = 0;
         }
-        else if(xVelocity == 0 && player.getIsCrouched()){
+        else if(xVelocity == 0 && player.getIsCrouched() && player.getHealth() > 0){
             player.crouch();
             animationId = 7;
             if(fallDamageCount > util.screenHeight()){
@@ -296,13 +351,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             }
             fallDamageCount = 0;
         }
-        else if(player.getIsCrouched() && xVelocity != 0 && player.getBox().getBottomCollision()){
+        else if(player.getIsCrouched() && xVelocity != 0 && player.getBox().getBottomCollision() && player.getHealth() > 0){
             player.crouchWalk();
             animationId = 8;
             if(fallDamageCount > util.screenHeight()){
                 player.setHealth(player.getHealth() - ((fallDamageCount - util.screenHeight()) / fallDamageDivisor));
             }
             fallDamageCount = 0;
+        }
+        else if(player.getHealth() <= 0){
+            player.death();
         }
         else{
             player.setIdle();
@@ -527,6 +585,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         crouchButton.draw(canvas);
         meleeButton.draw(canvas);
         fireButton.draw(canvas);
+        respawnButton.draw(canvas);
         if(player.healthBar.getCurrentHealth() <= player.healthBar.getMaxHealth() / 2){
             paint.setColor(Color.argb(round((float)(255) - ((float)(player.healthBar.getCurrentHealth()) / (float)(player.healthBar.getMaxHealth() / 2) * (float) (255))),150, 0, 0));
             paint.setStyle(Paint.Style.STROKE);
