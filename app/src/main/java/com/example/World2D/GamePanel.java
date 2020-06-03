@@ -37,8 +37,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     int animationId = 0;
     int fallDamageCount = 0;
     int fallDamageDivisor = 47;
-    int maxFallDamage = 0;
-    int regenCount = 0;
+//    int maxFallDamage = 0;
+//    int regenCount = 0;
     Utilities util = new Utilities();
     ArrayList <PointF> pointers = new ArrayList<>();
     int buttonSize = util.screenHeight() / 720 * 80;
@@ -54,7 +54,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     private RoundButton respawnButton = new RoundButton(40, 40, buttonSize / 2);
     private RoundButton healButton = new RoundButton(40, 140, buttonSize / 2);
     Player player = new Player();
-    Environment e = new Environment(/*player.getBox()*/);
+    Environment e = new Environment(0, -util.screenHeight());
     public GamePanel(Context context){
         super(context);
         getHolder().addCallback(this);
@@ -150,11 +150,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 respawnButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
                 if(respawnButton.getActive()){
                     player.setHealth(player.healthBar.getMaxHealth());
-                    e.setDisplacement(-e.getXDisplacement(), -e.getYDisplacement());
+                    e.setDisplacement(-e.getXDisplacement(), -(e.getYDisplacement() + util.screenHeight()));
                     player.setHeals(3);
+                    fallDamageCount = 0;
                 }
                 healButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
-                if(healButton.getActive() && player.getHealth() < player.healthBar.getMaxHealth() && player.getHeals() > 0){
+                if(healButton.getActive() && player.getHealth() < player.healthBar.getMaxHealth() && player.getHeals() > 0 && player.getHealth() > 0){
                     player.setHealth(player.getHealth() + (player.healthBar.getMaxHealth() / 2));
                     player.setHeals(player.getHeals() - 1);
                 }
@@ -573,6 +574,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         e.draw(canvas);
 
         canvas.drawText("FPS: " + MainThread.getFPS(), 10, 60, paint);
+        canvas.drawText("displacement: " + e.getXDisplacement() + ", " + e.getYDisplacement(), 10, 100, paint);
         if(e.getCanDrawList().size() > mostDrawn){
             mostDrawn = e.getCanDrawList().size();
         }

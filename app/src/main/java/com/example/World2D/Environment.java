@@ -8,7 +8,7 @@ class Environment {
     Utilities util = new Utilities();
     ArrayList<Platform>mainList = new ArrayList<>();
 
-    Environment(){
+    Environment(int xDisplacement, int yDisplacement){
         mainList.add(new Platform(9640, 1280, 20000, 100));
         mainList.add(new Platform(3000, 1080, 300, 300));
         unpack(new Passage(6000, -350, 150, 3000,200,true));
@@ -19,6 +19,9 @@ class Environment {
         mainList.add(new Platform(3275, -2675, 750, 150));
         mainList.add(new Platform(4950, -2280, 100, 100));
         mainList.add(new Platform(4300, -2480, 100, 100));
+        for(int i = 0; i < mainList.size(); i++){
+            mainList.get(i).setDisplacement(xDisplacement, yDisplacement);
+        }
     }
     ArrayList<Platform>getCanDrawList(){
         ArrayList<Platform>canDrawList = new ArrayList<>();
