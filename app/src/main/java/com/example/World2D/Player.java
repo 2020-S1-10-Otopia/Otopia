@@ -1,12 +1,12 @@
 package com.example.World2D;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
+//import android.graphics.Color;
+//import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
+//import android.graphics.RadialGradient;
+//import android.graphics.Shader;
 
 import java.util.ArrayList;
 
@@ -36,14 +36,16 @@ class Player {
     private ArrayList<float[]> jumpList = new ArrayList<>();
     private ArrayList<float[]> wallRunList = new ArrayList<>();
     private ArrayList<float[]> deathList = new ArrayList<>();
+    private ArrayList<float[]> shootList = new ArrayList<>();
+    private ArrayList<float[]> meleeList = new ArrayList<>();
 
 //    private ArrayList<float[]> flipList = new ArrayList<>();
-    private float[]idleKeyFrame = {4, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200};
+    private float[]idleKeyFrame = {4, 0, 10, 20,    200, 180,   180, 150,   160, 170,   190, 200};
     private float[]onWallKeyFrame = {2, 0, 10, 20,  35, 10,     210, 190,   30,  170,   150, 170};
 //    private float[]crouchKeyFrame = {5, 30, 60, 90,  180, 60,     170, 80,   30,  170,   40, 190};
     private ArrayList<float[]> fallList = new ArrayList<>();
     private boolean isCrouched = false;
-    private boolean isFacingLeft = false;
+//    private boolean isFacingLeft = false;
     private int boneWidth = box.getWidth() / 15;
     private int walkKeyFrame = 0;
     private int jumpKeyFrame = 0;
@@ -64,8 +66,8 @@ class Player {
     private int onWallCount = 0;
     private int wallRunCount = 0;
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Shader shader = new RadialGradient(util.screenWidth() / 2, round(util.screenHeight() / 1.6), 200, new int[]{Color.argb(50, 0, 120, 200), Color.argb(200, 0, 120, 200)}, null, Shader.TileMode.CLAMP);
-    private Matrix m = new Matrix();
+//    private Shader shader = new RadialGradient(util.screenWidth() / 2, round(util.screenHeight() / 1.6), 200, new int[]{Color.argb(50, 0, 120, 200), Color.argb(200, 0, 120, 200)}, null, Shader.TileMode.CLAMP);
+//    private Matrix m = new Matrix();
     Player(){
         Point centerOfMass = new Point(box.getX(), box.getY());
         int rateOfChange = 2;
@@ -124,14 +126,23 @@ class Player {
         deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
         deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
         deathList.add(new float[]{10, 90, 90, 90, 270, 270, 270, 270, 270, 270, 270, 270});
-//        deathList.add(new float[]{});
 
+        meleeList.add(new float[]{});
+        meleeList.add(new float[]{});
+        meleeList.add(new float[]{});
+        meleeList.add(new float[]{});
+        meleeList.add(new float[]{});
     }
     void setHeals(int heals){
         this.heals = heals;
     }
     int getHeals(){
         return heals;
+    }
+    void setInstantIdle(){
+        for(int i = 0; i < parts.size(); i++){
+            parts.get(i).setCurrentRotation(idleKeyFrame[i + 1]);
+        }
     }
     private void mirrorJoints(boolean b) {
         for(int i = 0; i<parts.size(); i++){
@@ -148,7 +159,7 @@ class Player {
         return health;
     }
     void setFacingLeft(boolean b){
-        this.isFacingLeft = b;
+//        this.isFacingLeft = b;
         mirrorJoints(b);
     }
 //    boolean getIsFacingLeft(){

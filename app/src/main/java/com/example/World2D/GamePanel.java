@@ -12,7 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
-import java.util.Random;
+//import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, GameObject {
     private MainThread thread;
@@ -42,9 +42,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     Utilities util = new Utilities();
     ArrayList <PointF> pointers = new ArrayList<>();
     int buttonSize = util.screenHeight() / 720 * 80;
-    Random rand = new Random();
-    int angle1 = rand.nextInt(360);
-    int angle2 = rand.nextInt(360);
+//    Random rand = new Random();
     private RoundButton leftButton = new RoundButton(util.screenWidth() / 1280 * 120, util.screenHeight() / 720 * 600, buttonSize, new Arrow(180, buttonSize / 4 * 3, util.screenWidth() / 1280 * 120, util.screenHeight() / 720 * 600));
     private RoundButton rightButton = new RoundButton(util.screenWidth() / 1280 * 300, util.screenHeight() / 720 * 600, buttonSize, new Arrow(0, buttonSize / 4 * 3, util.screenWidth() / 1280 * 300, util.screenHeight() / 720 * 600));
     private RoundButton jumpButton = new RoundButton(util.screenWidth() / 1280 * 1180, util.screenHeight() / 720 * 510, buttonSize, new Arrow(270, buttonSize / 4 * 3, util.screenWidth() / 1280 * 1180, util.screenHeight() /  720 * 510));
@@ -118,7 +116,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 }
                 if(!crouchButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
                     jumpButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
-                    if(jumpButton.getActive() && !player.getIsCrouched()){
+                    if(jumpButton.getActive() && !player.getIsCrouched() && player.getHealth() > 0){
                         jumpId = 0;
                         if(player.getCurrentJumps() > 0){
                             player.setCurrentJumps(player.getCurrentJumps() - 1);
@@ -151,6 +149,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 if(respawnButton.getActive()){
                     player.setHealth(player.healthBar.getMaxHealth());
                     e.setDisplacement(-e.getXDisplacement(), -(e.getYDisplacement() + util.screenHeight()));
+                    player.setInstantIdle();
+                    xVelocity = 0;
+                    yVelocity = 0;
                     player.setHeals(3);
                     fallDamageCount = 0;
                 }
@@ -177,7 +178,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 }
                 if(!jumpButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
                     jumpButton.handleTouchDown(event.getX(event.getActionIndex()), event.getY(event.getActionIndex()));
-                    if (jumpButton.getActive()){
+                    if (jumpButton.getActive() && player.getHealth() > 0){
                         jumpId = event.getPointerId(event.getActionIndex());
                         if(player.getCurrentJumps() > 0 && !player.getIsCrouched()){
                             player.setCurrentJumps(player.getCurrentJumps() - 1);
@@ -382,7 +383,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         for(int i = 0; i<e.mainList.size(); i++){
             e.mainList.get(i).setColour();
         }
-        if(rightButton.getActive()){
+        if(rightButton.getActive() && player.getHealth() > 0){
             if(player.getBox().getBottomCollision() || player.getBox().getLeftCollision() || player.getBox().getRightCollision()) {
                 xVelocity -= player.getAccelerationX();
                 if (xVelocity < -maxVelocity && !player.getIsCrouched()) {
@@ -399,7 +400,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 }
             }
         }
-        if(leftButton.getActive()) {
+        if(leftButton.getActive() && player.getHealth() > 0) {
             if (player.getBox().getBottomCollision() || player.getBox().getLeftCollision() || player.getBox().getRightCollision()) {
                 xVelocity += player.getAccelerationX();
                 if (xVelocity > maxVelocity && !player.getIsCrouched()) {
@@ -417,7 +418,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             }
         }
         player.setIsCrouched(false);
-        if(crouchButton.getActive() && player.getBox().getBottomCollision() || (player.getBox().getTopCollision() && player.getBox().getBottomCollision())){
+        if((crouchButton.getActive() && player.getBox().getBottomCollision() || (player.getBox().getTopCollision() && player.getBox().getBottomCollision())) && player.getHealth() > 0){
                 int bottomBound = player.getBox().getY() + player.getBox().getHeight() / 2;
                 player.getBox().setBounds(player.getBox().getWidth(), player.getBox().getWidth());
                 player.getBox().setPosition(player.getBox().getX(), bottomBound - (player.getBox().getWidth() / 2));
