@@ -14,8 +14,10 @@ class Player {
     private Utilities util = new Utilities();
     private int heals = 3;
     private BoundingBox box = new BoundingBox(util.screenWidth() / 2, round(util.screenHeight() / 1.6), util.screenWidth() / 25, util.screenHeight() / 6);
+
     private int health = 100;
-    StatusBar healthBar = new StatusBar(health, 255, 10, 350, 20, StatusBar.DISPLAY_FRACTION, "green");
+    StatusBar healthBar = new StatusBar(health, 255, 15, 350, 30, StatusBar.DISPLAY_FRACTION, "green");
+    boolean attacking = false;
     private int maxNumberOfJumps = 2;
     private int currentJumps = maxNumberOfJumps;
     private static final int abdomen = 0;
@@ -143,6 +145,8 @@ class Player {
         for(int i = 0; i < parts.size(); i++){
             parts.get(i).setCurrentRotation(idleKeyFrame[i + 1]);
         }
+        deathKeyFrame = 0;
+        deathCount = 0;
     }
     private void mirrorJoints(boolean b) {
         for(int i = 0; i<parts.size(); i++){
@@ -257,11 +261,11 @@ class Player {
             else if(parts.get(i).getCurrentRotation() > deathList.get(deathKeyFrame)[i + 1]){
                 if((parts.get(i).getCurrentRotation() - deathList.get(deathKeyFrame)[i + 1]) >= 180){
 //                  ++
-                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() +- ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() - ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
                 }
                 else if((parts.get(i).getCurrentRotation() - deathList.get(deathKeyFrame)[i + 1]) < 180){
 //                  --
-                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() - ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() + ((deathList.get(deathKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (deathList.get(deathKeyFrame)[0] - deathCount)));
                 }
             }
             connectJoints(parts);

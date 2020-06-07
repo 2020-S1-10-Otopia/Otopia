@@ -10,9 +10,7 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
 import java.util.ArrayList;
-//import java.util.Random;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, GameObject {
     private MainThread thread;
@@ -38,7 +36,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     int fallDamageCount = 0;
     int fallDamageDivisor = 47;
 //    int maxFallDamage = 0;
-//    int regenCount = 0;
+    int regenCount = 0;
     Utilities util = new Utilities();
     ArrayList <PointF> pointers = new ArrayList<>();
     int buttonSize = util.screenHeight() / 720 * 80;
@@ -157,7 +155,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                 }
                 healButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
                 if(healButton.getActive() && player.getHealth() < player.healthBar.getMaxHealth() && player.getHeals() > 0 && player.getHealth() > 0){
-                    player.setHealth(player.getHealth() + (player.healthBar.getMaxHealth() / 2));
+                    regenCount += player.healthBar.getMaxHealth() / 2;
                     player.setHeals(player.getHeals() - 1);
                 }
             }
@@ -337,9 +335,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             animationId = 3;
             fallDamageCount = 0;
         }
-//        else if(yVelocity > 0 && !player.getBox().getBottomCollision() && player.getCurrentJumps() < player.getMAX_NUMBER_OF_JUMPS() - 1){
-//            player.flip();
-//        }
         else if(yVelocity <= 0 && !player.getBox().getBottomCollision() && !player.getBox().getRightCollision() && !player.getBox().getLeftCollision() && player.getHealth() > 0){
             player.fall();
             animationId = 4;
@@ -565,6 +560,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     }
     @Override
     public void draw(Canvas canvas){
+
         paint.setTextSize(40);
         paint .setStrokeWidth(4);
         paint.setColor(Color.BLACK);
@@ -573,45 +569,58 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         canvas.drawColor(Color.rgb(255, 255, 255));
 
         e.draw(canvas);
-
         canvas.drawText("FPS: " + MainThread.getFPS(), 10, 60, paint);
         canvas.drawText("displacement: " + e.getXDisplacement() + ", " + e.getYDisplacement(), 10, 100, paint);
         if(e.getCanDrawList().size() > mostDrawn){
             mostDrawn = e.getCanDrawList().size();
         }
         player.getBox().setCanDraw(true);
-//        if(player.getHealth() < player.healthBar.getMaxHealth() && player.getHealth() > 0){
-//            regenCount++;
-//            if(regenCount > 90){
-//                regenCount = 0;
-//                player.setHealth(player.getHealth() + 1);
-//            }
-//        }
-//        else{
-//            regenCount = 0;
-//        }
+        if(player.getHealth() < player.healthBar.getMaxHealth() && player.getHealth() > 0 && regenCount > 0){
 
-        player.draw(canvas);
-        leftButton.draw(canvas);
-        rightButton.draw(canvas);
-        jumpButton.draw(canvas);
-        crouchButton.draw(canvas);
-        meleeButton.draw(canvas);
-        fireButton.draw(canvas);
-        respawnButton.draw(canvas);
-        healButton.draw(canvas);
-        canvas.drawText("" + player.getHeals(), healButton.getX() - paint.getTextSize() / 4, healButton.getY() + paint.getTextSize() / 3, paint);
-        if(player.healthBar.getCurrentHealth() <= player.healthBar.getMaxHealth() / 2){
+            regenCount--;
+            player.setHealth(player.getHealth() + 1);
+        }
+        else{
+            regenCount = 0;
+        }
+
+        if(player.healthBar.getCurrentHealth() < player.healthBar.getMaxHealth() / 2){
             paint.setColor(Color.argb(round((float)(255) - ((float)(player.healthBar.getCurrentHealth()) / (float)(player.healthBar.getMaxHealth() / 2) * (float) (255))),150, 0, 0));
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(round( (float)(100) - (float)(player.healthBar.getCurrentHealth()) / (float)(player.healthBar.getMaxHealth() / 2) * (float) (100)));
             paint.setMaskFilter(new BlurMaskFilter(paint.getStrokeWidth() / 2, BlurMaskFilter.Blur.NORMAL));
             canvas.drawRect(0, 0, util.screenWidth(), util.screenHeight(), paint);
+            paint.setMaskFilter(null);
+            paint.setColor(Color.BLACK);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setStrokeWidth(5);
+            player.draw(canvas);
+            leftButton.draw(canvas);
+            rightButton.draw(canvas);
+            jumpButton.draw(canvas);
+            crouchButton.draw(canvas);
+            meleeButton.draw(canvas);
+            fireButton.draw(canvas);
+            respawnButton.draw(canvas);
+            healButton.draw(canvas);
+            canvas.drawText("" + player.getHeals(), healButton.getX() - paint.getTextSize() / 4, healButton.getY() + paint.getTextSize() / 3, paint);
+        }
+        else if(player.healthBar.getCurrentHealth() >= player.healthBar.getMaxHealth() / 2){
+            player.draw(canvas);
+            leftButton.draw(canvas);
+            rightButton.draw(canvas);
+            jumpButton.draw(canvas);
+            crouchButton.draw(canvas);
+            meleeButton.draw(canvas);
+            fireButton.draw(canvas);
+            respawnButton.draw(canvas);
+            healButton.draw(canvas);
+            canvas.drawText("" + player.getHeals(), healButton.getX() - paint.getTextSize() / 4, healButton.getY() + paint.getTextSize() / 3, paint);
         }
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(5);
-        paint.setMaskFilter(null);
+
     }
     private static int round(float floatNum){
         int intNum = (int)(floatNum);
