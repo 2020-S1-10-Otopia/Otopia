@@ -117,6 +117,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                     if(jumpButton.getActive() && !player.getIsCrouched() && player.getHealth() > 0){
                         jumpId = 0;
                         if(player.getCurrentJumps() > 0){
+                            if(!player.getBox().getLeftCollision() && !player.getBox().getLeftCollision() && player.getCurrentJumps() > 0) {
+                                player.resetJumpAnimation();
+                            }
                             player.setCurrentJumps(player.getCurrentJumps() - 1);
                             yVelocity = 20;
                         }
@@ -126,9 +129,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                         if(player.getBox().getRightCollision() && !player.getBox().getBottomCollision()){
                             xVelocity = maxVelocity;
                         }
-                        if(!player.getBox().getLeftCollision() && !player.getBox().getLeftCollision()) {
-                            player.resetJumpAnimation();
-                        }
+
                     }
                 }
                 if(!jumpButton.getActive() && !crouchButton.getActive() && !fireButton.getActive()){
@@ -179,6 +180,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                     if (jumpButton.getActive() && player.getHealth() > 0){
                         jumpId = event.getPointerId(event.getActionIndex());
                         if(player.getCurrentJumps() > 0 && !player.getIsCrouched()){
+                            if(!player.getBox().getLeftCollision() && !player.getBox().getLeftCollision() && player.getCurrentJumps() > 0) {
+                                player.resetJumpAnimation();
+                            }
                             player.setCurrentJumps(player.getCurrentJumps() - 1);
                             yVelocity = 20;
                             if(player.getBox().getLeftCollision() && !player.getBox().getBottomCollision()){
@@ -188,9 +192,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                                 xVelocity = maxVelocity;
                             }
                         }
-                        if(!player.getBox().getLeftCollision() && !player.getBox().getLeftCollision()) {
-                            player.resetJumpAnimation();
-                        }
+
                     }
                 }
                 if(!crouchButton.getActive() && !meleeButton.getActive() && !fireButton.getActive()){
