@@ -126,7 +126,7 @@ class Player {
 
         deathList.add(new float[]{1, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200});
         deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
-        deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
+        deathList.add(new float[]{20, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
         deathList.add(new float[]{10, 90, 90, 90, 270, 270, 270, 270, 270, 270, 270, 270});
 
         meleeList.add(new float[]{});

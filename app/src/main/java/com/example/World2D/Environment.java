@@ -16,9 +16,15 @@ class Environment {
         unpack(new Passage(6000, -1925, 1000, 150, 200, true));
         mainList.add(new Platform(3900, -1925, 2000, 150));
         mainList.add(new Platform(2975, -2250, 150, 800));
-        mainList.add(new Platform(3275, -2675, 750, 150));
-        mainList.add(new Platform(4950, -2280, 100, 100));
-        mainList.add(new Platform(4300, -2480, 100, 100));
+        mainList.add(new Platform(2975, -2675, 1500, 150));
+        mainList.add(new Platform(4950, -2280, 150, 150));
+        mainList.add(new Platform(4300, -2480, 150, 150));
+        mainList.add(new Platform(1850, -3250 , 150, 1000));
+        mainList.add(new Platform(2300, -3288, 150, 925));
+        mainList.add(new Platform(2000, -2675, 450, 150));
+        unpack(new Passage(3375, -4000, 2000, 150, 500, false));
+        mainList.add(new Platform(1850, -, 150, 500));
+//        mainList.add(new Platform());
         for(int i = 0; i < mainList.size(); i++){
             mainList.get(i).setDisplacement(xDisplacement, yDisplacement);
         }
