@@ -23,7 +23,7 @@ class Environment {
         mainList.add(new Platform(2300, -3288, 150, 925));
         mainList.add(new Platform(2000, -2675, 450, 150));
         unpack(new Passage(3375, -4000, 2000, 150, 500, false));
-        mainList.add(new Platform(1850, -, 150, 500));
+        mainList.add(new Platform(1850, -4000, 150, 500));
 //        mainList.add(new Platform());
         for(int i = 0; i < mainList.size(); i++){
             mainList.get(i).setDisplacement(xDisplacement, yDisplacement);
