@@ -31,6 +31,8 @@ class Player {
     private static final int leftLeg = 8;
     private static final int rightThigh = 9;
     private static final int rightLeg = 10;
+    private static final int sword = 11;
+    private boolean striking = false;
     private ArrayList<Joint> parts = new ArrayList<>();
     private ArrayList<float[]> walkList = new ArrayList<>();
     private ArrayList<float[]> crouchList = new ArrayList<>();
@@ -56,6 +58,8 @@ class Player {
     private int crouchWalkKeyFrame = 0;
     private int deathKeyFrame = 0;
     private int deathCount = 0;
+    private int meleeKeyFrame = 0;
+    private int meleeCount = 0;
 //    private int flipKeyFrame = 0;
     private int crouchKeyFrame = 0;
     private int jumpCount = 0;
@@ -70,8 +74,9 @@ class Player {
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 //    private Shader shader = new RadialGradient(util.screenWidth() / 2, round(util.screenHeight() / 1.6), 200, new int[]{Color.argb(50, 0, 120, 200), Color.argb(200, 0, 120, 200)}, null, Shader.TileMode.CLAMP);
 //    private Matrix m = new Matrix();
+    private Point centerOfMass = new Point(box.getX(), box.getY());
     Player(){
-        Point centerOfMass = new Point(box.getX(), box.getY());
+
         int rateOfChange = 2;
         parts.add(new Joint(centerOfMass.x, centerOfMass.y, box.getHeight() / 5, 0));//0, abdomen
         parts.add(new Joint(parts.get(abdomen).getX(), parts.get(abdomen).getY(), box.getHeight() / 5, 10));//1, torso
@@ -84,34 +89,35 @@ class Player {
         parts.add(new Joint(parts.get(leftThigh).getX(), parts.get(leftThigh).getY(), box.getHeight() / 4, 170));//8, leftLeg
         parts.add(new Joint(parts.get(abdomen).getAnchorX(), parts.get(abdomen).getAnchorY(), box.getHeight() / 4, 200));
         parts.add(new Joint(parts.get(rightThigh).getX(), parts.get(rightThigh).getY(), box.getHeight() / 4, 220));
+        parts.add(new Joint(parts.get(rightForearm).getX(), parts.get(rightForearm).getY(), round(box.getHeight() * 0.6f), 0));
 
-        walkList.add(new float[]{rateOfChange * 2, 20, 30, 60,     205, 170,   195, 105,   105, 195,   185, 195});
-        walkList.add(new float[]{rateOfChange, 30, 28, 60,     215, 160,   185, 100,   110, 180,   205, 205});
-        walkList.add(new float[]{rateOfChange, 30, 36, 60,     230, 190,   175, 90,   110, 165,   195, 240});
-        walkList.add(new float[]{rateOfChange, 30, 44, 60,     260, 215,   165, 70,   125, 140,   195, 300});
-        walkList.add(new float[]{rateOfChange, 30, 36, 60,     240, 200,   165, 80,   140, 195,   185, 280});
-        walkList.add(new float[]{rateOfChange * 2, 28, 30, 60,     200, 195,   195, 135,   150, 195,   145, 250});
-        walkList.add(new float[]{rateOfChange * 2, 20, 30, 60,     195, 105,   205, 170,   185, 195,   105, 195});
-        walkList.add(new float[]{rateOfChange, 30, 28, 60,     185, 100,   215, 160,   205, 205,   110, 180});
-        walkList.add(new float[]{rateOfChange, 30, 36, 60,     175, 90,   230, 190,   195, 240,   110, 165});
-        walkList.add(new float[]{rateOfChange, 30, 44, 60,     165, 70,   260, 215,   195, 300,   125, 140});
-        walkList.add(new float[]{rateOfChange, 30, 36, 60,     165, 80,   240, 200,   185, 280,   140, 195});
-        walkList.add(new float[]{rateOfChange * 2, 28, 30, 60,     195, 135,   200, 195,   145, 250,   150, 195});
+        walkList.add(new float[]{rateOfChange * 2, 20, 30, 60,     205, 170,   195, 105,   105, 195,   185, 195, 0});
+        walkList.add(new float[]{rateOfChange, 30, 28, 60,     215, 160,   185, 100,   110, 180,   205, 205, 0});
+        walkList.add(new float[]{rateOfChange, 30, 36, 60,     230, 190,   175, 90,   110, 165,   195, 240, 0});
+        walkList.add(new float[]{rateOfChange, 30, 44, 60,     260, 215,   165, 70,   125, 140,   195, 300, 0});
+        walkList.add(new float[]{rateOfChange, 30, 36, 60,     240, 200,   165, 80,   140, 195,   185, 280, 0});
+        walkList.add(new float[]{rateOfChange * 2, 28, 30, 60,     200, 195,   195, 135,   150, 195,   145, 250, 0});
+        walkList.add(new float[]{rateOfChange * 2, 20, 30, 60,     195, 105,   205, 170,   185, 195,   105, 195, 0});
+        walkList.add(new float[]{rateOfChange, 30, 28, 60,     185, 100,   215, 160,   205, 205,   110, 180, 0});
+        walkList.add(new float[]{rateOfChange, 30, 36, 60,     175, 90,   230, 190,   195, 240,   110, 165, 0});
+        walkList.add(new float[]{rateOfChange, 30, 44, 60,     165, 70,   260, 215,   195, 300,   125, 140, 0});
+        walkList.add(new float[]{rateOfChange, 30, 36, 60,     165, 80,   240, 200,   185, 280,   140, 195, 0});
+        walkList.add(new float[]{rateOfChange * 2, 28, 30, 60,     195, 135,   200, 195,   145, 250,   150, 195, 0});
 
-        jumpList.add(new float[]{1,  0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200});
-        jumpList.add(new float[]{4,  10, 20, 30,    250, 210,    240, 200,    120, 220,    185, 185});
-        jumpList.add(new float[]{8, 30, 50, 60,      230, 190,     220, 180,   80, 190,     100, 210});
+        jumpList.add(new float[]{1,  0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200, 0});
+        jumpList.add(new float[]{4,  10, 20, 30,    250, 210,    240, 200,    120, 220,    185, 185, 0});
+        jumpList.add(new float[]{8, 30, 50, 60,      230, 190,     220, 180,   80, 190,     100, 210, 0});
 
-        fallList.add(new float[]{1, 30, 50, 60,      230, 190,     220, 180,   80, 190,     100, 210});
-        fallList.add(new float[]{5, 0, 0, 0,    230, 190,   220, 180,    100, 200,   120, 220});
-        fallList.add(new float[]{5, 0, 0, 0,   230, 190,   220, 180,    175, 220,   160, 240});
+        fallList.add(new float[]{1, 30, 50, 60,      230, 190,     220, 180,   80, 190,     100, 210, 0});
+        fallList.add(new float[]{5, 0, 0, 0,    230, 190,   220, 180,    100, 200,   120, 220, 0});
+        fallList.add(new float[]{5, 0, 0, 0,   230, 190,   220, 180,    175, 220,   160, 240, 0});
 
-        crouchList.add(new float[]{5, 15, 30, 45,   160, 110,      140, 90,     130, 180,   110, 110});
-        crouchList.add(new float[]{5, 30, 60, 90,   200, 150,      180, 130,    90, 220,    70, 180});
+        crouchList.add(new float[]{5, 15, 30, 45,   160, 110,      140, 90,     130, 180,   110, 110, 0});
+        crouchList.add(new float[]{5, 30, 60, 90,   200, 150,      180, 130,    90, 220,    70, 180, 0});
 
-        wallRunList.add(new float[]{10, 0, 10, 20,      35, 10,     240, 90,    150, 170,    30, 170});
+        wallRunList.add(new float[]{10, 0, 10, 20,      35, 10,     240, 90,    150, 170,    30, 170, 0});
 //        walkList.add(new float[]{5, 0, 10, 20,      });
-        wallRunList.add(new float[]{10, 0, 10, 20,      240, 90,    35, 10,     30, 170,    150, 170});
+        wallRunList.add(new float[]{10, 0, 10, 20,      240, 90,    35, 10,     30, 170,    150, 170, 0});
 //        walkList.add(new float[]{5, 0, 10, 20,      });
         //        fallList.add(new float[]{1, 0, 0, 35,        200, 190,   220, 180,    100, 210,   120, 230 });
 //        flipList.add(new float[]{5, 72, 92, 112,        202, 122,       192, 112,       122, 232,   112, 222});
@@ -119,21 +125,27 @@ class Player {
 //        flipList.add(new float[]{5, 216, 236, 256,      346, 266,       336, 256,       266, 16,    256, 6});
 //        flipList.add(new float[]{5, 288, 308, 328,      58, 338,        48, 328,        338, 88,    238, 78});
 //        flipList.add(new float[]{5, 0, 20, 40,          130, 50,        120, 40,        50,  160,   40,  150});
-        crouchWalkList.add(new float[]{5, 30, 60, 90,   280, 200,   160, 80,   90, 220,    70, 180});
-        crouchWalkList.add(new float[]{5, 30, 60, 90,   220, 140,   220, 140,   80, 200,    80, 200});
-        crouchWalkList.add(new float[]{5, 30, 60, 90,   160, 80,   280, 200,   70, 180,    90, 220});
-        crouchWalkList.add(new float[]{5, 30, 60, 90,   220, 140,   220, 140,   80, 200,    80, 200});
+        crouchWalkList.add(new float[]{5, 30, 60, 90,   280, 200,   160, 80,   90, 220,    70, 180, 0});
+        crouchWalkList.add(new float[]{5, 30, 60, 90,   220, 140,   220, 140,   80, 200,    80, 200, 0});
+        crouchWalkList.add(new float[]{5, 30, 60, 90,   160, 80,   280, 200,   70, 180,    90, 220, 0});
+        crouchWalkList.add(new float[]{5, 30, 60, 90,   220, 140,   220, 140,   80, 200,    80, 200, 0});
 
-        deathList.add(new float[]{1, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200});
-        deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
-        deathList.add(new float[]{20, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270});
-        deathList.add(new float[]{10, 90, 90, 90, 270, 270, 270, 270, 270, 270, 270, 270});
+        deathList.add(new float[]{1, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200, 0});
+        deathList.add(new float[]{10, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270, 0});
+        deathList.add(new float[]{20, 0, 10, 20, 175, 175, 185, 185, 175, 270, 185, 270, 0});
+        deathList.add(new float[]{10, 90, 90, 90, 270, 270, 270, 270, 270, 270, 270, 270, 0});
 
-        meleeList.add(new float[]{});
-        meleeList.add(new float[]{});
-        meleeList.add(new float[]{});
-        meleeList.add(new float[]{});
-        meleeList.add(new float[]{});
+        meleeList.add(new float[]{1, 0, 10, 20,    200, 180,   20, 350,   150, 170,   190, 200, 0});
+        meleeList.add(new float[]{10, 20, 40, 60,   150, 140,   150, 140,   150, 170,   220, 240, 140});
+        meleeList.add(new float[]{10, 0, 10, 20,    200, 180,   180, 150,   150, 170,   190, 200, 180});
+//        meleeList.add(new float[]{});
+//        meleeList.add(new float[]{});
+    }
+    void setStriking(boolean b){
+        striking = b;
+    }
+    boolean getStriking(){
+        return striking;
     }
     void setHeals(int heals){
         this.heals = heals;
@@ -181,6 +193,55 @@ class Player {
         wallRunKeyFrame = 0;
         wallRunCount = 0;
     }
+    //part that needs work***************************************************************************************************************
+    //striking is a boolean that denotes whether or not this animation should run
+//      meleelist is an arrayList that holds keyframe data
+//    meleekeyframe denotes which float array held within the meleelist is being accessed for data
+//    meleecount denotes how close to the final position the animation is. the closer it is to meleeList.get(meleeKeyFrame)[0] it is, the closer it is to the final position
+//    parts is an arraylist containing all of the joint objects that make up the player character
+//    connectJoints is a method that sticks all of the joints together in a way that looks natural after rotations have been applied
+    void melee(){
+//        striking = true;
+        for (int i = 0; i < parts.size(); i++) {
+            if (meleeList.get(meleeKeyFrame)[i + 1] >= parts.get(i).getCurrentRotation()) {
+                if((meleeList.get(meleeKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) >= 180){
+//                    --
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() - ((meleeList.get(meleeKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (meleeList.get(meleeKeyFrame)[0] - meleeCount)));
+                }
+                else if((meleeList.get(meleeKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) < 180){
+//                    ++
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() + ((meleeList.get(meleeKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (meleeList.get(meleeKeyFrame)[0] - meleeCount)));
+                }
+            }
+            else if(parts.get(i).getCurrentRotation() > meleeList.get(meleeKeyFrame)[i + 1]){
+                if((parts.get(i).getCurrentRotation() - meleeList.get(meleeKeyFrame)[i + 1]) >= 180){
+//                  ++
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() - ((meleeList.get(meleeKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (meleeList.get(meleeKeyFrame)[0] - meleeCount)));
+                }
+                else if((parts.get(i).getCurrentRotation() - meleeList.get(meleeKeyFrame)[i + 1]) < 180){
+//                  --
+                    parts.get(i).setCurrentRotation(parts.get(i).getCurrentRotation() + ((meleeList.get(meleeKeyFrame)[i + 1] - parts.get(i).getCurrentRotation()) / (meleeList.get(meleeKeyFrame)[0] - meleeCount)));
+                }
+            }
+            connectJoints(parts);
+        }
+        if(meleeCount < meleeList.get(meleeKeyFrame)[0] && meleeKeyFrame < meleeList.size() - 1){
+            meleeCount++;
+            if(meleeCount >= meleeList.get(meleeKeyFrame)[0]){
+                meleeKeyFrame++;
+                meleeCount = 0;
+            }
+        }
+        if(meleeKeyFrame >= meleeList.size() - 1 && meleeCount >= meleeList.get(meleeKeyFrame)[0] - 1){
+            meleeKeyFrame = 0;
+            meleeCount = 0;
+            striking = false;
+        }
+    }
+//    **********************************************************************************************************************************************
+    void fire(){
+
+    }
 //    private void resetFlipAnimation(){
 //        flipKeyFrame = 0;
 //        flipCount = 0;
@@ -209,6 +270,10 @@ class Player {
         list.get(leftLeg).setAnchorLocation(list.get(leftThigh).getX(), list.get(leftThigh).getY());
         list.get(rightThigh).setAnchorLocation(list.get(abdomen).getAnchorX(), list.get(abdomen).getAnchorY());
         list.get(rightLeg).setAnchorLocation(list.get(rightThigh).getX(), list.get(rightThigh).getY());
+        list.get(sword).setAnchorLocation(list.get(rightForearm).getX(), list.get(rightForearm).getY());
+    }
+    Point getCenterOfMass(){
+        return  centerOfMass;
     }
     void walk(){
         for (int i = 0; i < parts.size(); i++){
@@ -475,9 +540,13 @@ class Player {
         return 1;
     }
     void draw(Canvas canvas) {
-        for (int i = 0; i<parts.size(); i++){
+        for (int i = 0; i<parts.size() - 1; i++){
             parts.get(i).setWidth(boneWidth);
             parts.get(i).drawAll(canvas);
+        }
+        if(striking){
+            parts.get(parts.size() - 1).setWidth(boneWidth);
+            parts.get(parts.size() - 1).drawBone(canvas);
         }
         healthBar.draw(canvas);
     }

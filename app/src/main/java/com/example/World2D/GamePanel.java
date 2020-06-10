@@ -50,6 +50,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     private RoundButton respawnButton = new RoundButton(40, 40, buttonSize / 2);
     private RoundButton healButton = new RoundButton(40, 140, buttonSize / 2);
     Player player = new Player();
+    Field f = new Field(0, -600, 200, 200);
     Environment e = new Environment(0, -util.screenHeight());
     public GamePanel(Context context){
         super(context);
@@ -136,6 +137,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                     meleeButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
                     if(meleeButton.getActive()){
                         meleeId = 0;
+//                        **************************************************************************
+//                        if player presses down on the meleebutton, striking = true
+                        player.setStriking(true);
+//                        **************************************************************************
                     }
                 }
                 if(!jumpButton.getActive() && !crouchButton.getActive() && !meleeButton.getActive()){
@@ -205,6 +210,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                     meleeButton.handleTouchDown(event.getX(event.getActionIndex()), event.getY(event.getActionIndex()));
                     if(meleeButton.getActive()){
                         meleeId = event.getPointerId(event.getActionIndex());
+//                        **************************************************************************
+//                        if player presses down on the meleebutton, striking = true
+                        player.setStriking(true);
+//                        **************************************************************************
                     }
                 }
                 if(!jumpButton.getActive() && !crouchButton.getActive() && !meleeButton.getActive()){
@@ -324,6 +333,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
             }
             fallDamageCount = 0;
         }
+//        ******************************************************************************************
+//        checking if striking is true, then running the melee() animation
+        else if(player.getStriking()) {
+            player.melee();
+        }
+//        ******************************************************************************************
         else if(xVelocity == 0 && yVelocity == 0 && !player.getIsCrouched() && player.getBox().getBottomCollision() && player.getHealth() > 0){
             player.setIdle();
             animationId = 2;
@@ -573,6 +588,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
         e.draw(canvas);
         canvas.drawText("FPS: " + MainThread.getFPS(), 10, 60, paint);
         canvas.drawText("displacement: " + e.getXDisplacement() + ", " + e.getYDisplacement(), 10, 100, paint);
+        canvas.drawText("striking: " + player.getStriking(), 10, 140, paint);
         if(e.getCanDrawList().size() > mostDrawn){
             mostDrawn = e.getCanDrawList().size();
         }

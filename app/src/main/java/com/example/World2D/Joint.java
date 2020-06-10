@@ -32,6 +32,12 @@ class Joint{
         this.x = round(Math.sin(Math.toRadians(currentRotation)) * distance) + this.anchorX;
         this.y = -1 * (round(Math.cos(Math.toRadians(currentRotation)) * distance)) + this.anchorY;
     }
+    Joint(){
+        anchorX = 0;
+        anchorY = 0;
+        distance = 0;
+        currentRotation = 0;
+    }
     void setIsMirrored(boolean b){
         isMirrored = b;
         if(!isMirrored) {

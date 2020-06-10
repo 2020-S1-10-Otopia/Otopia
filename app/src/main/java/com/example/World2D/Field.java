@@ -7,15 +7,28 @@ import android.graphics.Point;
 
 public class Field implements GameObject{
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    int x, y, width, height, xDisplacement = 0, yDisplacement = 0;
+    private int x, y, width, height, xDisplacement = 0, yDisplacement = 0;
     Field(int x, int y, int width, int height){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
     }
-    boolean check(Point point){
-        return point.x >= x - (width / 2) && point.x <= x + (width / 2) && point.y >= y - (height / 2) && point.y <= y + (height / 2);
+    void setDisplacement(int x, int y){
+        xDisplacement = x;
+        yDisplacement = y;
+    }
+    int getXDisplacement(){
+        return xDisplacement;
+    }
+    int getYDisplacement(){
+        return yDisplacement;
+    }
+    boolean checkPoint(Point point){
+        return point.x >= x - (width / 2) + xDisplacement && point.x <= x + (width / 2) + xDisplacement && point.y >= y - (height / 2) + yDisplacement && point.y <= y + (height / 2) + yDisplacement;
+    }
+    boolean checkPoint(int pointX, int pointY){
+        return pointX >= x - (width / 2) + xDisplacement && pointX <= x + (width / 2) + xDisplacement && pointY >= y - (height / 2) + yDisplacement && pointY <= y + (height / 2) + yDisplacement;
     }
     @Override
     public void update() {
