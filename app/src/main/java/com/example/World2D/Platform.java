@@ -1,6 +1,5 @@
 package com.example.World2D;
 
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,7 +18,7 @@ public class Platform implements GameObject {
     private int topEdge;
     private int bottomEdge;
     private int xDisplacement = 0;
-    private int yDisplacement = 0;
+    private int yDisplacement = -720;
     private Random rand = new Random();
     private int rTarget = rand.nextInt(255);
     private int gTarget = rand.nextInt(255);
@@ -42,21 +41,21 @@ public class Platform implements GameObject {
         this.b = b;
     }
     void setColour(){
-       if(r<rTarget){
-           r++;
-       }
+        if(r<rTarget){
+            r++;
+        }
         else if(r > rTarget){
             r--;
-       }
+        }
         else{
-           rTarget = rand.nextInt(255);
-           if(r<rTarget){
-               r++;
-           }
-           else if(r > rTarget){
-               r--;
-           }
-       }
+            rTarget = rand.nextInt(255);
+            if(r<rTarget){
+                r++;
+            }
+            else if(r > rTarget){
+                r--;
+            }
+        }
         if(g<gTarget){
             g++;
         }
@@ -89,28 +88,28 @@ public class Platform implements GameObject {
         }
 
     }
-    void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
-        leftEdge = round((x + xDisplacement) - round(width / 2));
-        rightEdge = round((x + xDisplacement) + round(width / 2));
-        topEdge = round((y + yDisplacement) - round(height / 2));
-        bottomEdge = round((y + yDisplacement) + round(height / 2));
-    }
-    void setBounds(int width, int height) {
-        this.width = width;
-        this.height = height;
-        leftEdge = round(x - round(width / 2));
-        rightEdge = round(x + round(width / 2));
-        topEdge = round(y - round(height / 2));
-        bottomEdge = round(y + round(height / 2));
-    }
+    //    void setPosition(float x, float y) {
+//        this.x = x;
+//        this.y = y;
+//        leftEdge = round((x + xDisplacement) - round(width / 2));
+//        rightEdge = round((x + xDisplacement) + round(width / 2));
+//        topEdge = round((y + yDisplacement) - round(height / 2));
+//        bottomEdge = round((y + yDisplacement) + round(height / 2));
+//    }
+//    void setBounds(int width, int height) {
+//        this.width = width;
+//        this.height = height;
+//        leftEdge = round(x - round(width / 2));
+//        rightEdge = round(x + round(width / 2));
+//        topEdge = round(y - round(height / 2));
+//        bottomEdge = round(y + round(height / 2));
+//    }
     boolean getCanDraw(){
         return this.canDraw;
     }
-    boolean getBoxCollision(){
-        return boxCollision;
-    }
+    //    boolean getBoxCollision(){
+//        return boxCollision;
+//    }
     @Override
     public void update() {
 
@@ -146,14 +145,14 @@ public class Platform implements GameObject {
         int bTop = box.getY() - (box.getHeight() / 2);
         int bBottom = box.getY() + (box.getHeight() / 2);
         this.boxCollision = ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
-                        ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2)) ||
-                        ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
-                        ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2));
+                ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2)) ||
+                ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
+                ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2));
 
-    return((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
-            ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2)) ||
-            ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
-            ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2));
+        return((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
+                ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2)) ||
+                ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
+                ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2));
     }
     int getWidth(){
         return width;
@@ -161,46 +160,46 @@ public class Platform implements GameObject {
     int getHeight(){
         return height;
     }
-    void handleCharacterCollision(BoundingBox box){
-        int bLeft = box.getX() - (box.getWidth() / 2);
-        int bRight = box.getX() + (box.getWidth() / 2);
-        int bTop = box.getY() - (box.getHeight() / 2);
-        int bBottom = box.getY() + (box.getHeight() / 2);
-        int topDist;
-        int leftDist;
-        int rightDist;
-        int bottomDist;
-        boxCollision =
-                ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
-                        ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2)) ||
-                        ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
-                        ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2));
-        if (boxCollision) {
-            topDist = round(Math.abs(bBottom - ((y + yDisplacement) - height / 2)));
-            leftDist = round(Math.abs(bRight - ((x + xDisplacement) - width / 2)));
-            rightDist = round(Math.abs(bLeft - ((x + xDisplacement) + width / 2)));
-            bottomDist = round(Math.abs(bTop - ((y + yDisplacement) + height / 2)));
-            if (topDist <= leftDist && topDist <= rightDist && topDist <= bottomDist) {
-                box.setPosition(box.getX(), round(((y + yDisplacement) - round(height / 2)) - round(box.getHeight() / 2)));
-                box.setBottomCollision(true);
-            }
-            if (leftDist < topDist && leftDist < rightDist && leftDist < bottomDist) {
-                box.setPosition(round((x + xDisplacement) - round(width / 2)) - round(box.getWidth() / 2), box.getY());
-                box.setRightCollision(true);
-            }
-            if (rightDist < topDist && rightDist < leftDist && rightDist < bottomDist) {
-                box.setPosition(round((x + xDisplacement) + round(width / 2)) + round(box.getWidth() / 2), box.getY());
-                box.setLeftCollision(true);
-            }
-            if(bottomDist < topDist && bottomDist <= leftDist && bottomDist <= rightDist) {
-                box.setPosition(box.getX(), round(((y + yDisplacement) + round(height / 2)) + round(box.getHeight() / 2)));
-                box.setTopCollision(true);
-            }
-        }
-        else {
-            box.setCollisionsFalse();
-        }
-    }
+    //    void handleCharacterCollision(BoundingBox box){
+//        int bLeft = box.getX() - (box.getWidth() / 2);
+//        int bRight = box.getX() + (box.getWidth() / 2);
+//        int bTop = box.getY() - (box.getHeight() / 2);
+//        int bBottom = box.getY() + (box.getHeight() / 2);
+//        int topDist;
+//        int leftDist;
+//        int rightDist;
+//        int bottomDist;
+//        boxCollision =
+//                ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
+//                        ((bRight >= (x + xDisplacement) - width / 2) && (bRight <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2)) ||
+//                        ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bTop >= (y + yDisplacement) - height / 2) && (bTop <= (y + yDisplacement) + height / 2)) ||
+//                        ((bLeft >= (x + xDisplacement) - width / 2) && (bLeft <= (x + xDisplacement) + width / 2) && (bBottom >= (y + yDisplacement) - height / 2) && (bBottom <= (y + yDisplacement) + height / 2));
+//        if (boxCollision) {
+//            topDist = round(Math.abs(bBottom - ((y + yDisplacement) - height / 2)));
+//            leftDist = round(Math.abs(bRight - ((x + xDisplacement) - width / 2)));
+//            rightDist = round(Math.abs(bLeft - ((x + xDisplacement) + width / 2)));
+//            bottomDist = round(Math.abs(bTop - ((y + yDisplacement) + height / 2)));
+//            if (topDist <= leftDist && topDist <= rightDist && topDist <= bottomDist) {
+//                box.setPosition(box.getX(), round(((y + yDisplacement) - round(height / 2)) - round(box.getHeight() / 2)));
+//                box.setBottomCollision(true);
+//            }
+//            if (leftDist < topDist && leftDist < rightDist && leftDist < bottomDist) {
+//                box.setPosition(round((x + xDisplacement) - round(width / 2)) - round(box.getWidth() / 2), box.getY());
+//                box.setRightCollision(true);
+//            }
+//            if (rightDist < topDist && rightDist < leftDist && rightDist < bottomDist) {
+//                box.setPosition(round((x + xDisplacement) + round(width / 2)) + round(box.getWidth() / 2), box.getY());
+//                box.setLeftCollision(true);
+//            }
+//            if(bottomDist < topDist && bottomDist <= leftDist && bottomDist <= rightDist) {
+//                box.setPosition(box.getX(), round(((y + yDisplacement) + round(height / 2)) + round(box.getHeight() / 2)));
+//                box.setTopCollision(true);
+//            }
+//        }
+//        else {
+//            box.setCollisionsFalse();
+//        }
+//    }
     void setDisplacement(int xDisplacement, int yDisplacement){
         this.xDisplacement = xDisplacement;
         this.yDisplacement = yDisplacement;
@@ -211,32 +210,32 @@ public class Platform implements GameObject {
     int getYDisplacement(){
         return yDisplacement;
     }
-    int getXOverlap(BoundingBox box){
-        int num = 0;
-        if(boxCollision){
-            num = ((box.getWidth() / 2) + (width / 2)) -  box.getX() + round(x);
-        }
-        return num;
-    }
-    int getYOverlap(BoundingBox box){
-        int num = 0;
-        if(boxCollision){
-            num = ((box.getHeight() / 2) + (height / 2)) -  box.getY() + round(y);
-        }
-        return num;
-    }
+    //    int getXOverlap(BoundingBox box){
+//        int num = 0;
+//        if(boxCollision){
+//            num = ((box.getWidth() / 2) + (width / 2)) -  box.getX() + round(x);
+//        }
+//        return num;
+//    }
+//    int getYOverlap(BoundingBox box){
+//        int num = 0;
+//        if(boxCollision){
+//            num = ((box.getHeight() / 2) + (height / 2)) -  box.getY() + round(y);
+//        }
+//        return num;
+//    }
     float getX(){
         return x + xDisplacement;
     }
     float getY(){
         return y + yDisplacement;
     }
-        private static int round ( float floatNum){
-            int intNum = (int) (floatNum);
-            float decimal = floatNum - intNum;
-            if (decimal >= 0.5) {
-                intNum++;
-            }
-            return intNum;
+    private static int round ( float floatNum){
+        int intNum = (int) (floatNum);
+        float decimal = floatNum - intNum;
+        if (decimal >= 0.5) {
+            intNum++;
         }
+        return intNum;
     }
+}

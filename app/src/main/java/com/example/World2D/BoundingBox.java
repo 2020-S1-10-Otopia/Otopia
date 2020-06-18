@@ -3,7 +3,6 @@ package com.example.World2D;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
 import java.util.Random;
 
 class BoundingBox {
@@ -16,7 +15,7 @@ class BoundingBox {
     private boolean topCollision = false;
     private boolean bottomCollision = false;
     private Random rand = new Random();
-    int r = rand.nextInt(255), rTarget = rand.nextInt(255), g = rand.nextInt(255), gTarget = rand.nextInt(255), b = rand.nextInt(255), bTarget = rand.nextInt(255);
+    private int r = rand.nextInt(255), rTarget = rand.nextInt(255), g = rand.nextInt(255), gTarget = rand.nextInt(255), b = rand.nextInt(255), bTarget = rand.nextInt(255);
     BoundingBox(int x, int y, int width, int height){
         this.x = x;
         this.y = y;

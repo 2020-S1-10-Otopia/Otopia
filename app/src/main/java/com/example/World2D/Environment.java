@@ -1,7 +1,6 @@
 package com.example.World2D;
 
 import android.graphics.Canvas;
-
 import java.util.ArrayList;
 
 class Environment {
@@ -24,7 +23,6 @@ class Environment {
         mainList.add(new Platform(2000, -2675, 450, 150));
         unpack(new Passage(3375, -4000, 2000, 150, 500, false));
         mainList.add(new Platform(1850, -4000, 150, 500));
-//        mainList.add(new Platform());
         for(int i = 0; i < mainList.size(); i++){
             mainList.get(i).setDisplacement(xDisplacement, yDisplacement);
         }
@@ -49,14 +47,14 @@ class Environment {
             mainList.get(i).setDisplacement(mainList.get(i).getXDisplacement() + xVal, mainList.get(i).getYDisplacement() + yVal);
         }
     }
+    void setColour(int index, int r, int g, int b){
+        mainList.get(index).setColour(r, g, b);
+    }
     int getXDisplacement(){
         return mainList.get(0).getXDisplacement();
     }
     int getYDisplacement(){
         return mainList.get(0).getYDisplacement();
-    }
-    void setColour(int index, int r, int g, int b){
-        mainList.get(index).setColour(r, g, b);
     }
     void setColour(int r, int g, int b){
         for(int i = 0; i < mainList.size(); i++){

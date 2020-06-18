@@ -26,6 +26,15 @@ public class RoundButton {
     boolean getActive(){
         return active;
     }
+    int getX(){
+        return x;
+    }
+    int getY(){
+        return y;
+    }
+    int getRadius(){
+        return radius;
+    }
     RoundButton(int x, int y, int radius, Arrow arrow){
         this.x = x;
         this.y = y;
@@ -57,7 +66,7 @@ public class RoundButton {
     void setInactive(){
         active = false;
     }
-//    int getR(){
+    //    int getR(){
 //        return this.r;
 //    }
 //    int getG(){
@@ -90,11 +99,5 @@ public class RoundButton {
         if(arrowIncluded){
             arrow.draw(canvas);
         }
-    }
-    int getX(){
-        return x;
-    }
-    int getY(){
-        return y;
     }
 }
