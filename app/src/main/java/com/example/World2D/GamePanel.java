@@ -55,7 +55,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
     private RoundButton healButton = new RoundButton(round(util.screenWidth() / 1280 * 40), round(util.screenHeight() / 720 * 140), round(util.screenHeight() / 720 * 40));
     private RoundButton respawnButton = new RoundButton(round(util.screenWidth() / 1280 * 40), round(util.screenHeight() / 720 * 40), round(util.screenHeight() / 720 * 40));
     Player player = new Player();
-    Environment e = new Environment(0, -util.screenHeight());
+    Environment e = new Environment(0, 200);
     public GamePanel(Context context){
         super(context);
         getHolder().addCallback(this);
@@ -168,7 +168,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback, Ga
                     respawnButton.handleTouchDown(pointers.get(0).x, pointers.get(0).y);
                     if(respawnButton.getActive()){
                         respawnId = 0;
-                        e.setDisplacement(-e.getXDisplacement(), -(e.getYDisplacement() + util.screenHeight()));
+                        e.setDisplacement(0, 200);
                         xVelocity = 0;
                         yVelocity = 0;
                         fallDamageCount = 0;
