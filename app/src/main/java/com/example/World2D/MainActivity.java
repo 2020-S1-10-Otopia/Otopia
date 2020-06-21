@@ -25,7 +25,9 @@ public class MainActivity extends Activity {
                         "- Press ↑ to jump upwards. \n" +
                         "- Press ↓ to crouch to the floor. \n" +
                         "- Press ← to move left. \n" +
-                        "- Press → to move right \n")
+                        "- Press → to move right \n" +
+                        "- Press ↺ to respawn the character \n" +
+                        "- Press the heal button to heal character")
                 .setCancelable(false)
                 .setPositiveButton("Got it!",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
